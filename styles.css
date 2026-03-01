@@ -182,6 +182,12 @@ body.edit-mode .editor-launcher {
   box-shadow: var(--shadow);
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .brand {
   font-size: 0.9rem;
   letter-spacing: 0.18em;
@@ -200,6 +206,39 @@ body.edit-mode .editor-launcher {
 .site-nav a:hover,
 .site-nav a:focus-visible {
   color: var(--accent);
+}
+
+.language-switcher {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.28rem;
+  border: 1px solid rgba(96, 29, 21, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.language-button {
+  min-width: 3rem;
+  padding: 0.55rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.language-button:hover,
+.language-button:focus-visible {
+  transform: translateY(-1px);
+  color: var(--accent-dark);
+}
+
+.language-button.is-active {
+  color: #fff8f2;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  box-shadow: 0 8px 18px rgba(96, 29, 21, 0.2);
 }
 
 .section {
@@ -536,6 +575,11 @@ body.edit-mode [data-editor-image="true"]:hover {
     border-radius: 1.4rem;
   }
 
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .hero,
   .section-grid,
   .memory-strip,
@@ -579,6 +623,25 @@ body.edit-mode [data-editor-image="true"]:hover {
   .site-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .header-controls,
+  .site-nav,
+  .language-switcher {
+    width: 100%;
+  }
+
+  .header-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .site-nav {
+    justify-content: space-between;
+  }
+
+  .language-button {
+    flex: 1;
   }
 
   .section {

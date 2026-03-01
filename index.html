@@ -3,23 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Бабаш Жукенов | Семейная биография</title>
+  <title data-i18n="metaTitle">Бабаш Жукенов | Семейная биография</title>
   <meta
     name="description"
     content="Лендинг-память о Бабаше Жукенове, собранный по семейным фотографиям, наградам и архивным документам."
+    data-i18n-attrs="content:metaDescription"
   >
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#top">Семейный архив</a>
-      <nav class="site-nav" aria-label="Основная навигация">
-        <a href="#about">О жизни</a>
-        <a href="#timeline">Хронология</a>
-        <a href="#awards">Награды</a>
-        <a href="#archive">Архив</a>
-      </nav>
+      <a class="brand" href="#top" data-i18n="brand">Семейный архив</a>
+      <div class="header-controls">
+        <nav class="site-nav" aria-label="Основная навигация" data-i18n-attrs="aria-label:navigationAria">
+          <a href="#about" data-i18n="navAbout">О жизни</a>
+          <a href="#timeline" data-i18n="navTimeline">Хронология</a>
+          <a href="#awards" data-i18n="navAwards">Награды</a>
+          <a href="#archive" data-i18n="navArchive">Архив</a>
+        </nav>
+        <div
+          class="language-switcher"
+          aria-label="Переключение языка"
+          data-i18n-attrs="aria-label:languageSwitcherAria"
+        >
+          <button class="language-button is-active" type="button" data-lang-switch="ru">RU</button>
+          <button class="language-button" type="button" data-lang-switch="kz">KZ</button>
+        </div>
+      </div>
     </header>
 
     <button
@@ -29,6 +40,7 @@
       data-editor-ui
       aria-controls="editor-toolbar"
       aria-expanded="false"
+      data-i18n="settingsLauncher"
     >
       Настройки
     </button>
@@ -38,13 +50,21 @@
       id="editor-toolbar"
       data-editor-ui
       aria-label="Панель редактирования"
+      data-i18n-attrs="aria-label:editorPanelAria"
       hidden
     >
       <div class="editor-toolbar__top">
-        <strong>Редактор страницы</strong>
+        <strong data-i18n="editorTitle">Редактор страницы</strong>
         <div class="editor-toolbar__meta">
           <span class="editor-status" id="editor-status">Режим просмотра</span>
-          <button class="editor-close" type="button" id="close-settings" aria-label="Скрыть настройки">
+          <button
+            class="editor-close"
+            type="button"
+            id="close-settings"
+            aria-label="Скрыть настройки"
+            data-i18n="editorClose"
+            data-i18n-attrs="aria-label:editorCloseAria"
+          >
             Закрыть
           </button>
         </div>
@@ -53,17 +73,17 @@
         <button class="editor-button editor-button-primary" type="button" id="toggle-edit">
           Включить редактирование
         </button>
-        <button class="editor-button" type="button" id="export-content">
+        <button class="editor-button" type="button" id="export-content" data-i18n="editorExport">
           Экспорт
         </button>
-        <button class="editor-button" type="button" id="import-content">
+        <button class="editor-button" type="button" id="import-content" data-i18n="editorImport">
           Импорт
         </button>
-        <button class="editor-button editor-button-danger" type="button" id="reset-content">
+        <button class="editor-button editor-button-danger" type="button" id="reset-content" data-i18n="editorReset">
           Сбросить
         </button>
       </div>
-      <p class="editor-hint">
+      <p class="editor-hint" data-i18n="editorHint">
         В режиме редактирования можно менять текст прямо на странице. Для замены фото нажмите на нужное изображение.
       </p>
       <input type="file" id="image-upload" accept="image/*" hidden>
@@ -73,29 +93,27 @@
     <main id="top">
       <section class="hero section">
         <div class="hero-copy">
-          <p class="eyebrow">Памяти человека, чья история сохранилась в документах и в семье</p>
-          <h1>Бабаш Жукенов</h1>
-          <p class="hero-lead">
-            Этот лендинг собран по семейным фотографиям, удостоверениям и наградам. Он фиксирует
-            путь человека поколения войны: службу, общественную работу, партийную школу, уважение
-            современников и память, которая продолжается в роду.
+          <p class="eyebrow" data-i18n="heroEyebrow">Памяти человека, чья история сохранилась в документах и в семье</p>
+          <h1 data-i18n="heroTitle">Бабаш Жукенов</h1>
+          <p class="hero-lead" data-i18n="heroLead">
+            Этот лендинг собран по семейным фотографиям, удостоверениям и наградам. Он фиксирует путь человека поколения войны: службу, общественную работу, партийную школу, уважение современников и память, которая продолжается в роду.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#timeline">Посмотреть путь жизни</a>
-            <a class="button button-secondary" href="#archive">Открыть архив</a>
+            <a class="button button-primary" href="#timeline" data-i18n="heroCtaTimeline">Посмотреть путь жизни</a>
+            <a class="button button-secondary" href="#archive" data-i18n="heroCtaArchive">Открыть архив</a>
           </div>
           <dl class="hero-facts">
             <div>
               <dt>1921</dt>
-              <dd>год рождения по архивным документам</dd>
+              <dd data-i18n="factBirthText">год рождения по архивным документам</dd>
             </div>
             <div>
               <dt>1946</dt>
-              <dd>вступление в партию</dd>
+              <dd data-i18n="factPartyText">вступление в партию</dd>
             </div>
             <div>
               <dt>1988-2004</dt>
-              <dd>подтвержденные юбилейные награды</dd>
+              <dd data-i18n="factAwardsText">подтвержденные юбилейные награды</dd>
             </div>
           </dl>
         </div>
@@ -105,47 +123,43 @@
             <img
               src="assets/portrait-main.jpeg"
               alt="Портрет Бабаша Жукенова"
+              data-i18n-attrs="alt:heroPortraitAlt"
             >
           </figure>
           <div class="portrait-note">
-            <span>Семейная фотография</span>
-            <strong>Личный архив семьи</strong>
+            <span data-i18n="portraitNoteLabel">Семейная фотография</span>
+            <strong data-i18n="portraitNoteSource">Личный архив семьи</strong>
           </div>
         </div>
       </section>
 
       <section class="section section-grid" id="about">
         <div class="section-heading">
-          <p class="eyebrow">О жизни</p>
-          <h2>Биография, восстановленная по документам</h2>
+          <p class="eyebrow" data-i18n="aboutEyebrow">О жизни</p>
+          <h2 data-i18n="aboutTitle">Биография, восстановленная по документам</h2>
         </div>
 
         <div class="story-card">
-          <p>
-            По сохранившимся документам видно, что Бабаш Жукенов родился в 1921 году. Его имя
-            связано с военной эпохой и послевоенной общественной работой. В семейном архиве
-            сохранились военный билет, партийный билет, удостоверение об окончании партийной школы
-            и несколько наградных документов разных лет.
+          <p data-i18n="aboutP1">
+            По сохранившимся документам видно, что Бабаш Жукенов родился в 1921 году. Его имя связано с военной эпохой и послевоенной общественной работой. В семейном архиве сохранились военный билет, партийный билет, удостоверение об окончании партийной школы и несколько наградных документов разных лет.
           </p>
-          <p>
-            Архив показывает не только официальный путь, но и человеческую сторону: строгие
-            портреты, групповые снимки, пожелтевшие страницы удостоверений и аккуратно хранимые
-            медали. Это история о достоинстве, служении и долгой памяти.
+          <p data-i18n="aboutP2">
+            Архив показывает не только официальный путь, но и человеческую сторону: строгие портреты, групповые снимки, пожелтевшие страницы удостоверений и аккуратно хранимые медали. Это история о достоинстве, служении и долгой памяти.
           </p>
         </div>
 
         <div class="facts-panel">
           <article>
-            <h3>Военное поколение</h3>
-            <p>Юбилейные медали Победы подтверждают связь с Великой Отечественной войной 1941-1945 годов.</p>
+            <h3 data-i18n="factWarTitle">Военное поколение</h3>
+            <p data-i18n="factWarBody">Юбилейные медали Победы подтверждают связь с Великой Отечественной войной 1941-1945 годов.</p>
           </article>
           <article>
-            <h3>Общественная работа</h3>
-            <p>Партийные документы фиксируют вступление в ноябре 1946 года и дальнейший путь служения.</p>
+            <h3 data-i18n="factPublicTitle">Общественная работа</h3>
+            <p data-i18n="factPublicBody">Партийные документы фиксируют вступление в ноябре 1946 года и дальнейший путь служения.</p>
           </article>
           <article>
-            <h3>Образование и признание</h3>
-            <p>В 1951-1952 годах завершена районная вечерняя партийная школа; позднее оформлен статус персонального пенсионера.</p>
+            <h3 data-i18n="factEducationTitle">Образование и признание</h3>
+            <p data-i18n="factEducationBody">В 1951-1952 годах завершена районная вечерняя партийная школа; позднее оформлен статус персонального пенсионера.</p>
           </article>
         </div>
       </section>
@@ -156,68 +170,68 @@
             src="assets/portrait-studio.jpeg"
             alt="Студийный портрет Бабаша Жукенова"
             loading="lazy"
+            data-i18n-attrs="alt:memoryPortraitAlt"
           >
         </figure>
         <blockquote class="memory-quote">
-          <p>
-            Память о человеке держится не только на датах. Она живет в лицах на старых снимках, в
-            следах печатей на документах и в уважении, с которым семья хранит его историю.
+          <p data-i18n="memoryQuote">
+            Память о человеке держится не только на датах. Она живет в лицах на старых снимках, в следах печатей на документах и в уважении, с которым семья хранит его историю.
           </p>
         </blockquote>
       </section>
 
       <section class="section" id="timeline">
         <div class="section-heading">
-          <p class="eyebrow">Хронология</p>
-          <h2>Ключевые вехи жизни</h2>
+          <p class="eyebrow" data-i18n="timelineEyebrow">Хронология</p>
+          <h2 data-i18n="timelineTitle">Ключевые вехи жизни</h2>
         </div>
 
         <div class="timeline">
           <article class="timeline-item">
             <span class="timeline-year">1921</span>
             <div>
-              <h3>Рождение</h3>
-              <p>Год рождения указан в партийном билете и других архивных материалах.</p>
+              <h3 data-i18n="timelineBirthTitle">Рождение</h3>
+              <p data-i18n="timelineBirthBody">Год рождения указан в партийном билете и других архивных материалах.</p>
             </div>
           </article>
 
           <article class="timeline-item">
             <span class="timeline-year">1941-1945</span>
             <div>
-              <h3>Военные годы</h3>
-              <p>Участие в поколении Победы подтверждается государственными юбилейными наградами к 50-летию и 60-летию Победы.</p>
+              <h3 data-i18n="timelineWarTitle">Военные годы</h3>
+              <p data-i18n="timelineWarBody">Участие в поколении Победы подтверждается государственными юбилейными наградами к 50-летию и 60-летию Победы.</p>
             </div>
           </article>
 
           <article class="timeline-item">
             <span class="timeline-year">1946</span>
             <div>
-              <h3>Вступление в партию</h3>
-              <p>По партийному билету дата вступления приходится на ноябрь 1946 года.</p>
+              <h3 data-i18n="timelinePartyTitle">Вступление в партию</h3>
+              <p data-i18n="timelinePartyBody">По партийному билету дата вступления приходится на ноябрь 1946 года.</p>
             </div>
           </article>
 
           <article class="timeline-item">
             <span class="timeline-year">1951-1952</span>
             <div>
-              <h3>Партийная школа</h3>
-              <p>Сохранилось удостоверение об окончании районной вечерней партийной школы при райкоме КП(б) Казахстана.</p>
+              <h3 data-i18n="timelineSchoolTitle">Партийная школа</h3>
+              <p data-i18n="timelineSchoolBody">Сохранилось удостоверение об окончании районной вечерней партийной школы при райкоме КП(б) Казахстана.</p>
             </div>
           </article>
 
           <article class="timeline-item">
             <span class="timeline-year">1977</span>
             <div>
-              <h3>Персональный пенсионер</h3>
-              <p>Архивное удостоверение указывает на статус персонального пенсионера союзного значения.</p>
+              <h3 data-i18n="timelinePensionTitle">Персональный пенсионер</h3>
+              <p data-i18n="timelinePensionBody">Архивное удостоверение указывает на статус персонального пенсионера союзного значения.</p>
             </div>
           </article>
 
           <article class="timeline-item">
             <span class="timeline-year">1988-2004</span>
             <div>
-              <h3>Награды и признание</h3>
-              <p>В архиве сохранились документы на юбилейные награды СССР и Республики Казахстан, а также медаль Маршала Жукова.</p>
+              <h3 data-i18n="timelineAwardsTitle">Награды и признание</h3>
+              <p data-i18n="timelineAwardsBody">В архиве сохранились документы на юбилейные награды СССР и Республики Казахстан, а также медаль Маршала Жукова.</p>
             </div>
           </article>
         </div>
@@ -225,8 +239,8 @@
 
       <section class="section" id="awards">
         <div class="section-heading">
-          <p class="eyebrow">Награды</p>
-          <h2>Документы, подтверждающие служение и признание</h2>
+          <p class="eyebrow" data-i18n="awardsEyebrow">Награды</p>
+          <h2 data-i18n="awardsTitle">Документы, подтверждающие служение и признание</h2>
         </div>
 
         <div class="awards-grid">
@@ -235,10 +249,11 @@
               src="assets/award-ussr-70.jpeg"
               alt="Удостоверение к юбилейной медали 70 лет Вооруженных Сил СССР"
               loading="lazy"
+              data-i18n-attrs="alt:award70Alt"
             >
             <div>
-              <h3>70 лет Вооруженных Сил СССР</h3>
-              <p>Наградной документ датирован 1988 годом.</p>
+              <h3 data-i18n="award70Title">70 лет Вооруженных Сил СССР</h3>
+              <p data-i18n="award70Text">Наградной документ датирован 1988 годом.</p>
             </div>
           </article>
 
@@ -247,10 +262,11 @@
               src="assets/award-victory-50.jpeg"
               alt="Удостоверение к медали 50 лет Победы в Великой Отечественной войне"
               loading="lazy"
+              data-i18n-attrs="alt:award50Alt"
             >
             <div>
-              <h3>50 лет Победы</h3>
-              <p>Удостоверение к юбилейной медали Республики Казахстан, вручение в 1995 году.</p>
+              <h3 data-i18n="award50Title">50 лет Победы</h3>
+              <p data-i18n="award50Text">Удостоверение к юбилейной медали Республики Казахстан, вручение в 1995 году.</p>
             </div>
           </article>
 
@@ -259,10 +275,11 @@
               src="assets/award-zhukov.jpeg"
               alt="Удостоверение к медали Маршала Советского Союза Жукова"
               loading="lazy"
+              data-i18n-attrs="alt:awardZhukovAlt"
             >
             <div>
-              <h3>Медаль Маршала Жукова</h3>
-              <p>Семейный архив хранит документ о награждении медалью Жукова в 1997 году.</p>
+              <h3 data-i18n="awardZhukovTitle">Медаль Маршала Жукова</h3>
+              <p data-i18n="awardZhukovText">Семейный архив хранит документ о награждении медалью Жукова в 1997 году.</p>
             </div>
           </article>
 
@@ -271,10 +288,11 @@
               src="assets/award-victory-60.jpeg"
               alt="Удостоверение к награде 60 лет Победы"
               loading="lazy"
+              data-i18n-attrs="alt:award60Alt"
             >
             <div>
-              <h3>60 лет Победы</h3>
-              <p>Наградной документ Республики Казахстан, оформленный в 2004 году.</p>
+              <h3 data-i18n="award60Title">60 лет Победы</h3>
+              <p data-i18n="award60Text">Наградной документ Республики Казахстан, оформленный в 2004 году.</p>
             </div>
           </article>
         </div>
@@ -282,8 +300,8 @@
 
       <section class="section archive-section" id="archive">
         <div class="section-heading">
-          <p class="eyebrow">Архив</p>
-          <h2>Фотографии и документы из семейной коллекции</h2>
+          <p class="eyebrow" data-i18n="archiveEyebrow">Архив</p>
+          <h2 data-i18n="archiveTitle">Фотографии и документы из семейной коллекции</h2>
         </div>
 
         <div class="archive-grid">
@@ -292,8 +310,9 @@
               src="assets/group-photo.jpeg"
               alt="Групповая фотография у памятника Ленину"
               loading="lazy"
+              data-i18n-attrs="alt:groupPhotoAlt"
             >
-            <figcaption>Групповой снимок эпохи, сохранивший атмосферу времени.</figcaption>
+            <figcaption data-i18n="groupPhotoCaption">Групповой снимок эпохи, сохранивший атмосферу времени.</figcaption>
           </figure>
 
           <figure class="archive-card">
@@ -301,8 +320,9 @@
               src="assets/party-school.jpeg"
               alt="Удостоверение об окончании партийной школы"
               loading="lazy"
+              data-i18n-attrs="alt:partySchoolAlt"
             >
-            <figcaption>Удостоверение об окончании партийной школы в 1952 году.</figcaption>
+            <figcaption data-i18n="partySchoolCaption">Удостоверение об окончании партийной школы в 1952 году.</figcaption>
           </figure>
 
           <figure class="archive-card">
@@ -310,8 +330,9 @@
               src="assets/party-card.jpeg"
               alt="Партийный билет"
               loading="lazy"
+              data-i18n-attrs="alt:partyCardAlt"
             >
-            <figcaption>Партийный билет с указанием 1946 года вступления.</figcaption>
+            <figcaption data-i18n="partyCardCaption">Партийный билет с указанием 1946 года вступления.</figcaption>
           </figure>
 
           <figure class="archive-card">
@@ -319,8 +340,9 @@
               src="assets/portrait-main.jpeg"
               alt="Портрет Бабаша Жукенова в зрелые годы"
               loading="lazy"
+              data-i18n-attrs="alt:archivePortraitAlt"
             >
-            <figcaption>Портрет, который задает всему архиву личное измерение.</figcaption>
+            <figcaption data-i18n="archivePortraitCaption">Портрет, который задает всему архиву личное измерение.</figcaption>
           </figure>
 
           <figure class="archive-card">
@@ -328,15 +350,16 @@
               src="assets/doc-early-id.jpeg"
               alt="Старое удостоверение с фотографией"
               loading="lazy"
+              data-i18n-attrs="alt:earlyIdAlt"
             >
-            <figcaption>Одно из ранних удостоверений, сохранивших подпись и печати.</figcaption>
+            <figcaption data-i18n="earlyIdCaption">Одно из ранних удостоверений, сохранивших подпись и печати.</figcaption>
           </figure>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>Лендинг собран по семейным архивным материалам. Тексты можно дополнить датами, воспоминаниями и именами родных.</p>
+      <p data-i18n="footerText">Лендинг собран по семейным архивным материалам. Тексты можно дополнить датами, воспоминаниями и именами родных.</p>
     </footer>
   </div>
   <script src="script.js"></script>
