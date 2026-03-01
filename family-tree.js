@@ -28,7 +28,7 @@
   var treeData = null;
   var isStandalonePage = document.body.classList.contains("tree-page");
 
-  if (!pageNodes.container || !pageNodes.root || !pageNodes.stats) {
+  if (!pageNodes.container || !pageNodes.stats) {
     return;
   }
 
@@ -45,6 +45,7 @@
     treeData = payload;
     bindEvents();
     renderPage();
+    window.addEventListener("resize", drawConnectors);
   }).catch(function (error) {
     console.error(error);
     pageNodes.container.innerHTML = "<p>Не удалось загрузить дерево семьи.</p>";
@@ -104,7 +105,7 @@
     });
 
     renderStats();
-    renderRoot();
+    hideLegacyRootSection();
     renderTree();
   }
 
@@ -124,94 +125,230 @@
     ].join("");
   }
 
-  function renderRoot() {
-    var ui = treeData.ui[state.language];
-    var family = treeData.family;
-
-    pageNodes.root.innerHTML = [
-      rootPersonCard(family.grandfather, ui.grandfatherLabel),
-      rootPersonCard(family.grandmother, ui.grandmotherLabel)
-    ].join("");
-  }
-
   function renderTree() {
-    var visibleChildren = treeData.family.children.filter(function (child) {
-      return matchesNodeOrDescendant(child, state.filter);
-    });
+    var rootNode = buildRootNode();
+    var filteredRoot = filterTree(rootNode, state.filter);
+
+    if (!filteredRoot) {
+      filteredRoot = buildRootNode();
+    }
+
+    annotateLayout(filteredRoot, 0, 1);
+    var levels = collectLevels(filteredRoot);
+    var maxDepth = levels.length - 1;
 
     if (pageNodes.empty) {
-      pageNodes.empty.hidden = visibleChildren.length > 0;
+      var hasVisibleDescendants = filteredRoot.children && filteredRoot.children.length > 0;
+      pageNodes.empty.hidden = hasVisibleDescendants;
       pageNodes.empty.textContent = treeData.ui[state.language].empty;
     }
 
-    pageNodes.container.innerHTML = "<ul class=\"tree-level tree-level-root\">" + visibleChildren.map(function (child) {
-      return renderNode(child, 0);
-    }).join("") + "</ul>";
+    pageNodes.container.innerHTML = [
+      "<div class=\"pedigree-chart\">",
+      "<div class=\"pedigree-stage\" style=\"--tree-columns:" + filteredRoot._span + ";\">",
+      "<svg class=\"pedigree-lines\" aria-hidden=\"true\"></svg>",
+      levels.slice().reverse().map(function (nodes, rowIndex) {
+        var actualDepth = maxDepth - rowIndex;
+        return renderRow(nodes, actualDepth, maxDepth);
+      }).join(""),
+      "</div>",
+      "</div>"
+    ].join("");
+
+    requestAnimationFrame(drawConnectors);
   }
 
-  function renderNode(node, depth) {
-    var ui = treeData.ui[state.language];
-    var children = (node.children || []).filter(function (child) {
-      return matchesNodeOrDescendant(child, state.filter);
+  function buildRootNode() {
+    return {
+      id: "family-root",
+      name: treeData.family.grandfather.name,
+      subtitle: {
+        ru: "Родоначальник",
+        kz: "Әулет бастауы"
+      },
+      note: treeData.family.grandfather.note,
+      years: treeData.family.grandfather.years,
+      photo: treeData.family.grandfather.photo,
+      spouse: treeData.family.grandmother ? treeData.family.grandmother.name : null,
+      children: treeData.family.children || []
+    };
+  }
+
+  function filterTree(node, query) {
+    var filteredChildren = (node.children || []).map(function (child) {
+      return filterTree(child, query);
+    }).filter(Boolean);
+
+    if (!query) {
+      return cloneNode(node, filteredChildren);
+    }
+
+    if (matchesNode(node, query) || filteredChildren.length) {
+      return cloneNode(node, filteredChildren);
+    }
+
+    return null;
+  }
+
+  function cloneNode(node, children) {
+    return {
+      id: node.id,
+      name: node.name,
+      subtitle: node.subtitle,
+      note: node.note,
+      years: node.years,
+      photo: node.photo,
+      spouse: node.spouse,
+      children: children
+    };
+  }
+
+  function annotateLayout(node, depth, start) {
+    node._depth = depth;
+    node._start = start;
+
+    if (!node.children || !node.children.length) {
+      node._span = 1;
+      return start + 1;
+    }
+
+    var nextStart = start;
+    node.children.forEach(function (child) {
+      nextStart = annotateLayout(child, depth + 1, nextStart);
     });
+
+    node._span = nextStart - start;
+    return nextStart;
+  }
+
+  function collectLevels(rootNode) {
+    var levels = [];
+
+    walk(rootNode, function (node) {
+      if (!levels[node._depth]) {
+        levels[node._depth] = [];
+      }
+      levels[node._depth].push(node);
+    });
+
+    return levels;
+  }
+
+  function walk(node, visitor) {
+    visitor(node);
+    (node.children || []).forEach(function (child) {
+      walk(child, visitor);
+    });
+  }
+
+  function renderRow(nodes, depth, maxDepth) {
+    return [
+      "<div class=\"pedigree-row\" data-depth=\"" + depth + "\">",
+      nodes.map(function (node) {
+        return renderCard(node, maxDepth);
+      }).join(""),
+      "</div>"
+    ].join("");
+  }
+
+  function renderCard(node) {
     var title = localized(node.name);
     var note = localized(node.note);
     var subtitle = localized(node.subtitle);
+    var spouse = localized(node.spouse);
     var photo = localized(node.photo) || PLACEHOLDER_PHOTO;
-    var childCount = countAll(node.children || []);
-    var childLabel = childCount === 1 ? ui.descendantSingle : ui.descendantPlural;
+    var cardClass = node.id === "family-root" ? "pedigree-card pedigree-card-root" : "pedigree-card";
 
     return [
-      "<li class=\"tree-node\">",
-      "<article class=\"tree-person-card\" data-depth=\"" + depth + "\">",
-      "<div class=\"tree-person-top\">",
-      "<img class=\"tree-person-photo\" src=\"" + escapeHtml(photo) + "\" alt=\"" + escapeHtml(title) + "\" loading=\"lazy\">",
-      "<div class=\"tree-person-copy\">",
-      "<span class=\"tree-node-badge\">" + escapeHtml(subtitle || generationLabel(depth, ui)) + "</span>",
+      "<article class=\"" + cardClass + "\" data-node-id=\"" + escapeHtml(node.id) + "\" style=\"grid-column:" + node._start + " / span " + node._span + ";\">",
+      "<div class=\"pedigree-card-shell\">",
+      "<img class=\"pedigree-card-photo\" src=\"" + escapeHtml(photo) + "\" alt=\"" + escapeHtml(title) + "\" loading=\"lazy\">",
+      "<div class=\"pedigree-card-copy\">",
+      subtitle ? "<span class=\"tree-node-badge\">" + escapeHtml(subtitle) + "</span>" : "",
       "<h3 class=\"tree-node-title\">" + escapeHtml(title) + "</h3>",
       node.years ? "<div class=\"tree-node-meta\">" + escapeHtml(node.years) + "</div>" : "",
+      spouse ? "<div class=\"pedigree-card-spouse\">" + escapeHtml(spouse) + "</div>" : "",
+      note ? "<p class=\"tree-node-note\">" + escapeHtml(note) + "</p>" : "",
       "</div>",
-      "</div>",
-      note ? "<p class=\"tree-node-note\">" + escapeHtml(note) + "</p>" : "<p class=\"tree-node-note\">" + escapeHtml(ui.emptyBranch) + "</p>",
-      "<div class=\"tree-node-footer\">",
-      "<span class=\"tree-node-count\">" + childCount + " " + escapeHtml(childLabel) + "</span>",
-      "</div>",
-      "</article>",
-      children.length ? "<ul class=\"tree-level tree-level-children\">" + children.map(function (child) {
-        return renderNode(child, depth + 1);
-      }).join("") + "</ul>" : "",
-      "</li>"
-    ].join("");
-  }
-
-  function generationLabel(depth, ui) {
-    if (depth === 0) {
-      return ui.generationChild;
-    }
-    if (depth === 1) {
-      return ui.generationGrandchild;
-    }
-    if (depth === 2) {
-      return ui.generationGreatGrandchild;
-    }
-    return ui.generationNext;
-  }
-
-  function rootPersonCard(person, label) {
-    var name = localized(person.name);
-    var photo = localized(person.photo) || PLACEHOLDER_PHOTO;
-
-    return [
-      "<article class=\"tree-root-person\">",
-      "<img class=\"tree-root-photo\" src=\"" + escapeHtml(photo) + "\" alt=\"" + escapeHtml(name) + "\" loading=\"lazy\">",
-      "<div class=\"tree-root-copy\">",
-      "<span class=\"tree-node-badge\">" + escapeHtml(label) + "</span>",
-      "<h3>" + escapeHtml(name) + "</h3>",
-      person.years ? "<p class=\"tree-node-meta\">" + escapeHtml(person.years) + "</p>" : "",
-      person.note ? "<p>" + escapeHtml(localized(person.note)) + "</p>" : "",
       "</div>",
       "</article>"
     ].join("");
+  }
+
+  function drawConnectors() {
+    var stage = pageNodes.container.querySelector(".pedigree-stage");
+    var svg = pageNodes.container.querySelector(".pedigree-lines");
+
+    if (!stage || !svg) {
+      return;
+    }
+
+    var boxes = {};
+    Array.from(stage.querySelectorAll("[data-node-id]")).forEach(function (node) {
+      boxes[node.dataset.nodeId] = measureBox(node, stage);
+    });
+
+    var width = Math.ceil(stage.scrollWidth);
+    var height = Math.ceil(stage.scrollHeight);
+
+    svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+    svg.setAttribute("width", String(width));
+    svg.setAttribute("height", String(height));
+
+    var lines = [];
+    var filteredRoot = filterTree(buildRootNode(), state.filter) || buildRootNode();
+
+    walk(filteredRoot, function (node) {
+      (node.children || []).forEach(function (child) {
+        var parentBox = boxes[node.id];
+        var childBox = boxes[child.id];
+
+        if (!parentBox || !childBox) {
+          return;
+        }
+
+        var parentX = parentBox.left + parentBox.width / 2;
+        var parentY = parentBox.top;
+        var childX = childBox.left + childBox.width / 2;
+        var childY = childBox.top + childBox.height;
+        var middleY = childY + ((parentY - childY) / 2);
+
+        lines.push(
+          "<path d=\"M " + childX + " " + childY + " V " + middleY + " H " + parentX + " V " + parentY + "\" />"
+        );
+      });
+    });
+
+    svg.innerHTML = lines.join("");
+  }
+
+  function measureBox(element, stage) {
+    var elementRect = element.getBoundingClientRect();
+    var stageRect = stage.getBoundingClientRect();
+
+    return {
+      left: elementRect.left - stageRect.left,
+      top: elementRect.top - stageRect.top,
+      width: elementRect.width,
+      height: elementRect.height
+    };
+  }
+
+  function hideLegacyRootSection() {
+    if (pageNodes.root && pageNodes.root.parentElement) {
+      pageNodes.root.parentElement.hidden = true;
+    }
+  }
+
+  function matchesNode(node, query) {
+    var haystack = [
+      localized(node.name),
+      localized(node.note),
+      localized(node.subtitle),
+      localized(node.spouse)
+    ].join(" ").toLowerCase();
+
+    return haystack.indexOf(query) !== -1;
   }
 
   function statCard(value, label) {
@@ -239,26 +376,6 @@
       acc[depth] = (acc[depth] || 0) + 1;
       return countGenerations(node.children || [], depth + 1, acc);
     }, map);
-  }
-
-  function matchesNodeOrDescendant(node, query) {
-    if (!query) {
-      return true;
-    }
-
-    var haystack = [
-      localized(node.name),
-      localized(node.note),
-      localized(node.subtitle)
-    ].join(" ").toLowerCase();
-
-    if (haystack.indexOf(query) !== -1) {
-      return true;
-    }
-
-    return (node.children || []).some(function (child) {
-      return matchesNodeOrDescendant(child, query);
-    });
   }
 
   function setText(node, value) {
