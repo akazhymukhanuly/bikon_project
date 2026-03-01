@@ -1,9 +1,9 @@
 (function () {
   var DEFAULT_LANGUAGE = "ru";
+  var PLACEHOLDER_PHOTO = "assets/family-member-placeholder.svg";
   var state = {
     language: DEFAULT_LANGUAGE,
-    filter: "",
-    expanded: {}
+    filter: ""
   };
 
   var pageNodes = {
@@ -43,7 +43,6 @@
     return response.json();
   }).then(function (payload) {
     treeData = payload;
-    expandAllNodes(treeData.family.children);
     bindEvents();
     renderPage();
   }).catch(function (error) {
@@ -72,17 +71,11 @@
     }
 
     if (pageNodes.expandAll) {
-      pageNodes.expandAll.addEventListener("click", function () {
-        expandAllNodes(treeData.family.children);
-        renderTree();
-      });
+      pageNodes.expandAll.hidden = true;
     }
 
     if (pageNodes.collapseAll) {
-      pageNodes.collapseAll.addEventListener("click", function () {
-        collapseAllNodes(treeData.family.children);
-        renderTree();
-      });
+      pageNodes.collapseAll.hidden = true;
     }
   }
 
@@ -101,8 +94,6 @@
     setText(pageNodes.note, ui.note);
     setText(pageNodes.searchLabel, ui.searchLabel);
     setPlaceholder(pageNodes.searchInput, ui.searchPlaceholder);
-    setText(pageNodes.expandAll, ui.expandAll);
-    setText(pageNodes.collapseAll, ui.collapseAll);
     setText(pageNodes.branchesEyebrow, ui.branchesEyebrow);
     setText(pageNodes.branchesTitle, ui.branchesTitle);
 
@@ -153,17 +144,9 @@
       pageNodes.empty.textContent = treeData.ui[state.language].empty;
     }
 
-    pageNodes.container.innerHTML = "<ul>" + visibleChildren.map(function (child) {
+    pageNodes.container.innerHTML = "<ul class=\"tree-level tree-level-root\">" + visibleChildren.map(function (child) {
       return renderNode(child, 0);
     }).join("") + "</ul>";
-
-    Array.from(pageNodes.container.querySelectorAll("[data-tree-toggle]")).forEach(function (button) {
-      button.addEventListener("click", function () {
-        var targetId = button.dataset.treeToggle;
-        state.expanded[targetId] = !state.expanded[targetId];
-        renderTree();
-      });
-    });
   }
 
   function renderNode(node, depth) {
@@ -171,33 +154,32 @@
     var children = (node.children || []).filter(function (child) {
       return matchesNodeOrDescendant(child, state.filter);
     });
-    var expanded = state.expanded[node.id] !== false;
     var title = localized(node.name);
     var note = localized(node.note);
     var subtitle = localized(node.subtitle);
+    var photo = localized(node.photo) || PLACEHOLDER_PHOTO;
     var childCount = countAll(node.children || []);
-    var toggleLabel = expanded ? ui.hideBranch : ui.showBranch;
     var childLabel = childCount === 1 ? ui.descendantSingle : ui.descendantPlural;
 
     return [
       "<li class=\"tree-node\">",
-      "<article class=\"tree-node-card\" data-depth=\"" + depth + "\">",
-      "<div class=\"tree-node-header\">",
-      "<div class=\"tree-node-title-wrap\">",
+      "<article class=\"tree-person-card\" data-depth=\"" + depth + "\">",
+      "<div class=\"tree-person-top\">",
+      "<img class=\"tree-person-photo\" src=\"" + escapeHtml(photo) + "\" alt=\"" + escapeHtml(title) + "\" loading=\"lazy\">",
+      "<div class=\"tree-person-copy\">",
       "<span class=\"tree-node-badge\">" + escapeHtml(subtitle || generationLabel(depth, ui)) + "</span>",
       "<h3 class=\"tree-node-title\">" + escapeHtml(title) + "</h3>",
       node.years ? "<div class=\"tree-node-meta\">" + escapeHtml(node.years) + "</div>" : "",
       "</div>",
-      children.length ? "<button class=\"tree-node-toggle\" type=\"button\" data-tree-toggle=\"" + escapeHtml(node.id) + "\">" + escapeHtml(toggleLabel) + "</button>" : "",
       "</div>",
       note ? "<p class=\"tree-node-note\">" + escapeHtml(note) + "</p>" : "<p class=\"tree-node-note\">" + escapeHtml(ui.emptyBranch) + "</p>",
       "<div class=\"tree-node-footer\">",
-      children.length ? "<span class=\"tree-node-count\">" + childCount + " " + escapeHtml(childLabel) + "</span>" : "<span class=\"tree-node-count\">0 " + escapeHtml(ui.descendantPlural) + "</span>",
+      "<span class=\"tree-node-count\">" + childCount + " " + escapeHtml(childLabel) + "</span>",
       "</div>",
       "</article>",
-      children.length ? "<div class=\"tree-node-children\"" + (expanded ? "" : " hidden") + "><ul>" + children.map(function (child) {
+      children.length ? "<ul class=\"tree-level tree-level-children\">" + children.map(function (child) {
         return renderNode(child, depth + 1);
-      }).join("") + "</ul></div>" : "",
+      }).join("") + "</ul>" : "",
       "</li>"
     ].join("");
   }
@@ -216,12 +198,18 @@
   }
 
   function rootPersonCard(person, label) {
+    var name = localized(person.name);
+    var photo = localized(person.photo) || PLACEHOLDER_PHOTO;
+
     return [
       "<article class=\"tree-root-person\">",
+      "<img class=\"tree-root-photo\" src=\"" + escapeHtml(photo) + "\" alt=\"" + escapeHtml(name) + "\" loading=\"lazy\">",
+      "<div class=\"tree-root-copy\">",
       "<span class=\"tree-node-badge\">" + escapeHtml(label) + "</span>",
-      "<h3>" + escapeHtml(localized(person.name)) + "</h3>",
+      "<h3>" + escapeHtml(name) + "</h3>",
       person.years ? "<p class=\"tree-node-meta\">" + escapeHtml(person.years) + "</p>" : "",
       person.note ? "<p>" + escapeHtml(localized(person.note)) + "</p>" : "",
+      "</div>",
       "</article>"
     ].join("");
   }
@@ -251,20 +239,6 @@
       acc[depth] = (acc[depth] || 0) + 1;
       return countGenerations(node.children || [], depth + 1, acc);
     }, map);
-  }
-
-  function expandAllNodes(nodes) {
-    (nodes || []).forEach(function (node) {
-      state.expanded[node.id] = true;
-      expandAllNodes(node.children || []);
-    });
-  }
-
-  function collapseAllNodes(nodes) {
-    (nodes || []).forEach(function (node) {
-      state.expanded[node.id] = false;
-      collapseAllNodes(node.children || []);
-    });
   }
 
   function matchesNodeOrDescendant(node, query) {
