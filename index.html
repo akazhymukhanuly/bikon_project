@@ -10,6 +10,7 @@
     data-i18n-attrs="content:metaDescription"
   >
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="family-tree.css">
 </head>
 <body>
   <div class="page-shell">
@@ -393,12 +394,58 @@
           </figure>
         </div>
       </section>
+      <section class="section tree-section-home" id="family-tree">
+        <div class="section-heading tree-heading">
+          <p class="eyebrow" id="tree-eyebrow">Шежіре</p>
+          <h2 id="tree-title">Родословное древо семьи</h2>
+          <p class="tree-lead" id="tree-lead">
+            Здесь на главной странице показаны дедушка, бабушка и все ветви потомков. Дерево строится динамически и может расти дальше по поколениям.
+          </p>
+        </div>
+
+        <div class="tree-dashboard">
+          <div class="tree-stats" id="tree-stats"></div>
+          <div class="tree-tools">
+            <label class="tree-search">
+              <span id="tree-search-label">Поиск по имени</span>
+              <input id="tree-search-input" type="search" placeholder="Введите имя или ветвь">
+            </label>
+            <div class="tree-tool-buttons">
+              <button class="editor-button" type="button" id="tree-expand-all">Раскрыть все</button>
+              <button class="editor-button" type="button" id="tree-collapse-all">Свернуть все</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tree-root-section">
+          <div id="tree-root-card"></div>
+        </div>
+
+        <div class="section-heading tree-heading">
+          <p class="eyebrow" id="tree-branches-eyebrow">Ветви рода</p>
+          <h3 id="tree-branches-title">Потомки по семейным линиям</h3>
+        </div>
+
+        <div class="tree-hero-note" id="tree-note">
+          Данные для этого блока загружаются из `family-tree.json`. Отдельная страница дерева тоже доступна по кнопке ниже.
+        </div>
+
+        <p class="tree-back-home">
+          <a class="button button-secondary" href="shezhire.html" id="tree-back-link">Открыть полную страницу шежіре</a>
+        </p>
+
+        <div class="tree-canvas">
+          <div class="tree-empty" id="tree-empty" hidden>Поиск ничего не нашел.</div>
+          <div id="tree-container" class="family-tree"></div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
       <p data-i18n="footerText">Лендинг собран по семейным архивным материалам. Тексты можно дополнить датами, воспоминаниями и именами родных.</p>
     </footer>
   </div>
+  <script src="family-tree.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

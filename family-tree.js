@@ -26,6 +26,7 @@
 
   var languageButtons = Array.from(document.querySelectorAll("[data-tree-lang]"));
   var treeData = null;
+  var isStandalonePage = document.body.classList.contains("tree-page");
 
   if (!pageNodes.container || !pageNodes.root || !pageNodes.stats) {
     return;
@@ -63,38 +64,47 @@
       });
     });
 
-    pageNodes.searchInput.addEventListener("input", function () {
-      state.filter = String(pageNodes.searchInput.value || "").trim().toLowerCase();
-      renderTree();
-    });
+    if (pageNodes.searchInput) {
+      pageNodes.searchInput.addEventListener("input", function () {
+        state.filter = String(pageNodes.searchInput.value || "").trim().toLowerCase();
+        renderTree();
+      });
+    }
 
-    pageNodes.expandAll.addEventListener("click", function () {
-      expandAllNodes(treeData.family.children);
-      renderTree();
-    });
+    if (pageNodes.expandAll) {
+      pageNodes.expandAll.addEventListener("click", function () {
+        expandAllNodes(treeData.family.children);
+        renderTree();
+      });
+    }
 
-    pageNodes.collapseAll.addEventListener("click", function () {
-      collapseAllNodes(treeData.family.children);
-      renderTree();
-    });
+    if (pageNodes.collapseAll) {
+      pageNodes.collapseAll.addEventListener("click", function () {
+        collapseAllNodes(treeData.family.children);
+        renderTree();
+      });
+    }
   }
 
   function renderPage() {
     var ui = treeData.ui[state.language];
     document.documentElement.lang = state.language === "kz" ? "kk" : "ru";
-    document.title = ui.pageTitle;
 
-    pageNodes.back.textContent = ui.back;
-    pageNodes.eyebrow.textContent = ui.eyebrow;
-    pageNodes.title.textContent = ui.title;
-    pageNodes.lead.textContent = ui.lead;
-    pageNodes.note.textContent = ui.note;
-    pageNodes.searchLabel.textContent = ui.searchLabel;
-    pageNodes.searchInput.placeholder = ui.searchPlaceholder;
-    pageNodes.expandAll.textContent = ui.expandAll;
-    pageNodes.collapseAll.textContent = ui.collapseAll;
-    pageNodes.branchesEyebrow.textContent = ui.branchesEyebrow;
-    pageNodes.branchesTitle.textContent = ui.branchesTitle;
+    if (isStandalonePage) {
+      document.title = ui.pageTitle;
+    }
+
+    setText(pageNodes.back, ui.back);
+    setText(pageNodes.eyebrow, ui.eyebrow);
+    setText(pageNodes.title, ui.title);
+    setText(pageNodes.lead, ui.lead);
+    setText(pageNodes.note, ui.note);
+    setText(pageNodes.searchLabel, ui.searchLabel);
+    setPlaceholder(pageNodes.searchInput, ui.searchPlaceholder);
+    setText(pageNodes.expandAll, ui.expandAll);
+    setText(pageNodes.collapseAll, ui.collapseAll);
+    setText(pageNodes.branchesEyebrow, ui.branchesEyebrow);
+    setText(pageNodes.branchesTitle, ui.branchesTitle);
 
     languageButtons.forEach(function (button) {
       var active = button.dataset.treeLang === state.language;
@@ -138,8 +148,11 @@
       return matchesNodeOrDescendant(child, state.filter);
     });
 
-    pageNodes.empty.hidden = visibleChildren.length > 0;
-    pageNodes.empty.textContent = treeData.ui[state.language].empty;
+    if (pageNodes.empty) {
+      pageNodes.empty.hidden = visibleChildren.length > 0;
+      pageNodes.empty.textContent = treeData.ui[state.language].empty;
+    }
+
     pageNodes.container.innerHTML = "<ul>" + visibleChildren.map(function (child) {
       return renderNode(child, 0);
     }).join("") + "</ul>";
@@ -272,6 +285,18 @@
     return (node.children || []).some(function (child) {
       return matchesNodeOrDescendant(child, query);
     });
+  }
+
+  function setText(node, value) {
+    if (node) {
+      node.textContent = value;
+    }
+  }
+
+  function setPlaceholder(node, value) {
+    if (node) {
+      node.placeholder = value;
+    }
   }
 
   function escapeHtml(value) {

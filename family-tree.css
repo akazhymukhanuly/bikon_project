@@ -154,6 +154,15 @@
   box-shadow: var(--shadow);
 }
 
+.tree-section-home {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.tree-back-home {
+  margin: 0;
+}
+
 .tree-empty {
   padding: 1rem 1.1rem;
   border-radius: 1rem;
