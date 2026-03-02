@@ -135,8 +135,6 @@
 
     annotateLayout(filteredRoot, 0, 1);
     var levels = collectLevels(filteredRoot);
-    var maxDepth = levels.length - 1;
-
     if (pageNodes.empty) {
       var hasVisibleDescendants = filteredRoot.children && filteredRoot.children.length > 0;
       pageNodes.empty.hidden = hasVisibleDescendants;
@@ -147,9 +145,8 @@
       "<div class=\"pedigree-chart\">",
       "<div class=\"pedigree-stage\" style=\"--tree-columns:" + filteredRoot._span + ";\">",
       "<svg class=\"pedigree-lines\" aria-hidden=\"true\"></svg>",
-      levels.slice().reverse().map(function (nodes, rowIndex) {
-        var actualDepth = maxDepth - rowIndex;
-        return renderRow(nodes, actualDepth, maxDepth);
+      levels.map(function (nodes, rowIndex) {
+        return renderRow(nodes, rowIndex);
       }).join(""),
       "</div>",
       "</div>"
@@ -241,11 +238,11 @@
     });
   }
 
-  function renderRow(nodes, depth, maxDepth) {
+  function renderRow(nodes, depth) {
     return [
       "<div class=\"pedigree-row\" data-depth=\"" + depth + "\">",
       nodes.map(function (node) {
-        return renderCard(node, maxDepth);
+        return renderCard(node);
       }).join(""),
       "</div>"
     ].join("");
@@ -308,13 +305,13 @@
         }
 
         var parentX = parentBox.left + parentBox.width / 2;
-        var parentY = parentBox.top;
+        var parentY = parentBox.top + parentBox.height;
         var childX = childBox.left + childBox.width / 2;
-        var childY = childBox.top + childBox.height;
-        var middleY = childY + ((parentY - childY) / 2);
+        var childY = childBox.top;
+        var middleY = parentY + ((childY - parentY) / 2);
 
         lines.push(
-          "<path d=\"M " + childX + " " + childY + " V " + middleY + " H " + parentX + " V " + parentY + "\" />"
+          "<path d=\"M " + parentX + " " + parentY + " V " + middleY + " H " + childX + " V " + childY + "\" />"
         );
       });
     });
