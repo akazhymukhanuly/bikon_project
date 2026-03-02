@@ -375,7 +375,18 @@
   var githubBranchInput = document.getElementById("github-branch");
   var githubPathInput = document.getElementById("github-path");
   var githubTokenInput = document.getElementById("github-token");
+  var archiveStage = document.querySelector("#archive-carousel .archive-stage");
+  var archiveItems = Array.from({ length: 25 }, function (_, index) {
+    var itemNumber = index + 1;
+    return {
+      src: "assets/muragat/muragat-" + String(itemNumber).padStart(2, "0") + ".jpeg",
+      alt: "Мұрағат материалы " + itemNumber,
+      caption: "Мұрағат материалы " + itemNumber,
+      key: "archive-muragat-" + itemNumber
+    };
+  });
   var archiveCarousel = document.getElementById("archive-carousel");
+  hydrateArchiveSlides();
   var archiveSlides = Array.from(document.querySelectorAll("[data-archive-slide]"));
   var archivePrevButton = document.getElementById("archive-prev");
   var archiveNextButton = document.getElementById("archive-next");
@@ -980,6 +991,20 @@
   function setStatus(nextStatusKey) {
     statusKey = nextStatusKey;
     statusNode.textContent = translate(statusKey);
+  }
+
+  function hydrateArchiveSlides() {
+    if (!archiveStage) {
+      return;
+    }
+
+    archiveStage.innerHTML = archiveItems.map(function (item) {
+      return '' +
+        '<figure class="archive-slide" data-archive-slide>' +
+        '<img src="' + item.src + '" data-editor-image-key="' + item.key + '" alt="' + item.alt + '" loading="lazy">' +
+        '<figcaption>' + item.caption + '</figcaption>' +
+        '</figure>';
+    }).join("");
   }
 
   function initCarousel(config) {

@@ -641,7 +641,7 @@ dd {
 
 .archive-stage {
   position: relative;
-  min-height: 42rem;
+  min-height: 52rem;
   overflow: hidden;
 }
 
@@ -649,7 +649,7 @@ dd {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(100%, 40rem);
+  width: min(100%, 50rem);
   margin: 0;
   overflow: hidden;
   border-radius: 1.5rem;
@@ -681,14 +681,14 @@ dd {
 .archive-slide.is-prev {
   z-index: 2;
   opacity: 0.75;
-  transform: translate(calc(-50% - min(29vw, 24rem)), -50%) scale(0.82);
+  transform: translate(calc(-50% - min(31vw, 27rem)), -50%) scale(0.78);
   filter: saturate(0.9);
 }
 
 .archive-slide.is-next {
   z-index: 2;
   opacity: 0.75;
-  transform: translate(calc(-50% + min(29vw, 24rem)), -50%) scale(0.82);
+  transform: translate(calc(-50% + min(31vw, 27rem)), -50%) scale(0.78);
   filter: saturate(0.9);
 }
 
