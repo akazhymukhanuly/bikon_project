@@ -603,6 +603,9 @@
 
   function renderLanguage(language) {
     document.documentElement.lang = language === "kz" ? "kk" : "ru";
+    window.dispatchEvent(new CustomEvent("grandpa-language-change", {
+      detail: { language: language }
+    }));
 
     translatableNodes.forEach(function (node) {
       var key = node.dataset.i18n;

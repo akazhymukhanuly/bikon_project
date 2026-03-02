@@ -2,7 +2,7 @@
   var DEFAULT_LANGUAGE = "ru";
   var PLACEHOLDER_PHOTO = "assets/family-member-placeholder.svg";
   var state = {
-    language: DEFAULT_LANGUAGE,
+    language: getInitialLanguage(),
     filter: ""
   };
 
@@ -52,10 +52,20 @@
   });
 
   function bindEvents() {
+    window.addEventListener("grandpa-language-change", function (event) {
+      var nextLanguage = event && event.detail && event.detail.language;
+      if (!treeData || !isSupportedLanguage(nextLanguage) || nextLanguage === state.language) {
+        return;
+      }
+
+      state.language = nextLanguage;
+      renderPage();
+    });
+
     languageButtons.forEach(function (button) {
       button.addEventListener("click", function () {
         var nextLanguage = button.dataset.treeLang;
-        if (nextLanguage === state.language) {
+        if (!isSupportedLanguage(nextLanguage) || nextLanguage === state.language) {
           return;
         }
 
@@ -360,6 +370,18 @@
       return value;
     }
     return value[state.language] || value.ru || "";
+  }
+
+  function getInitialLanguage() {
+    var lang = String(document.documentElement.lang || "").toLowerCase();
+    if (lang === "kk" || lang === "kz") {
+      return "kz";
+    }
+    return DEFAULT_LANGUAGE;
+  }
+
+  function isSupportedLanguage(value) {
+    return value === "ru" || value === "kz";
   }
 
   function countAll(nodes) {
