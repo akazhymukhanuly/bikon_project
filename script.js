@@ -1011,26 +1011,11 @@
       });
     }
 
-    carouselState.root.addEventListener("mouseenter", function () {
-      stopCarouselAutoplay(carouselState);
-    });
-    carouselState.root.addEventListener("mouseleave", function () {
-      startCarouselAutoplay(carouselState);
-    });
-    carouselState.root.addEventListener("focusin", function () {
-      stopCarouselAutoplay(carouselState);
-    });
-    carouselState.root.addEventListener("focusout", function () {
-      startCarouselAutoplay(carouselState);
-    });
-
-    startCarouselAutoplay(carouselState);
   }
 
   function stepCarousel(carouselState, direction) {
     carouselState.index = (carouselState.index + direction + carouselState.slides.length) % carouselState.slides.length;
     updateCarousel(carouselState);
-    restartCarouselAutoplay(carouselState);
   }
 
   function updateCarousel(carouselState) {
@@ -1063,31 +1048,6 @@
     });
   }
 
-  function startCarouselAutoplay(carouselState) {
-    if (carouselState.slides.length < 2 || carouselState.timer) {
-      return;
-    }
-
-    carouselState.timer = window.setInterval(function () {
-      carouselState.index = (carouselState.index + 1) % carouselState.slides.length;
-      updateCarousel(carouselState);
-    }, 3800);
-  }
-
-  function stopCarouselAutoplay(carouselState) {
-    if (!carouselState.timer) {
-      return;
-    }
-
-    window.clearInterval(carouselState.timer);
-    carouselState.timer = null;
-  }
-
-  function restartCarouselAutoplay(carouselState) {
-    stopCarouselAutoplay(carouselState);
-    startCarouselAutoplay(carouselState);
-  }
-
   function initAwardsGallery() {
     if (!awardsFeatureImage || awardsThumbs.length === 0) {
       return;
@@ -1099,13 +1059,8 @@
       thumb.addEventListener("click", function () {
         awardsIndex = index;
         updateAwardsGallery();
-        restartAwardsAutoplay();
       });
     });
-
-    awardsFeatureImage.closest(".awards-viewer").addEventListener("mouseenter", stopAwardsAutoplay);
-    awardsFeatureImage.closest(".awards-viewer").addEventListener("mouseleave", startAwardsAutoplay);
-    startAwardsAutoplay();
   }
 
   function updateAwardsGallery() {
@@ -1127,28 +1082,4 @@
     });
   }
 
-  function startAwardsAutoplay() {
-    if (awardsThumbs.length < 2 || awardsTimer) {
-      return;
-    }
-
-    awardsTimer = window.setInterval(function () {
-      awardsIndex = (awardsIndex + 1) % awardsThumbs.length;
-      updateAwardsGallery();
-    }, 3200);
-  }
-
-  function stopAwardsAutoplay() {
-    if (!awardsTimer) {
-      return;
-    }
-
-    window.clearInterval(awardsTimer);
-    awardsTimer = null;
-  }
-
-  function restartAwardsAutoplay() {
-    stopAwardsAutoplay();
-    startAwardsAutoplay();
-  }
 })();
