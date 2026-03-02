@@ -1,6 +1,6 @@
 (function () {
-  var STORAGE_KEY = "grandpa-landing-editor-v5";
-  var IMAGE_SCHEMA_VERSION = "v2";
+  var STORAGE_KEY = "grandpa-landing-editor-v6";
+  var IMAGE_SCHEMA_VERSION = "v3";
   var GITHUB_SETTINGS_KEY = "grandpa-landing-github-settings-v1";
   var DEFAULT_GITHUB_CONFIG = {
     owner: "akazhymukhanuly",
@@ -431,7 +431,7 @@
   });
 
   editableImages.forEach(function (node, index) {
-    var key = "image-" + index;
+    var key = node.dataset.editorImageKey || ("image-" + index);
     node.dataset.editorImageKey = key;
     node.dataset.originalSrc = node.getAttribute("src") || "";
     node.setAttribute("data-editor-image", "true");
