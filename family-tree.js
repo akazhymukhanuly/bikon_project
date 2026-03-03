@@ -1,6 +1,42 @@
 (function () {
   var DEFAULT_LANGUAGE = "ru";
   var PLACEHOLDER_PHOTO = "assets/family-member-placeholder.svg";
+  var DEFAULT_UI = {
+    ru: {
+      pageTitle: "Родословная семьи",
+      back: "Открыть полную страницу шежіре",
+      eyebrow: "Шежіре",
+      title: "Родословное древо семьи",
+      lead: "Здесь показаны дедушка, бабушка и все ветви потомков по семейным линиям.",
+      note: "Если в JSON нет служебного блока ui, дерево всё равно строится по доступным данным.",
+      searchLabel: "Поиск по имени",
+      searchPlaceholder: "Введите имя или ветвь",
+      branchesEyebrow: "Ветви рода",
+      branchesTitle: "Потомки по семейным линиям",
+      statsChildren: "детей",
+      statsGrandchildren: "внуков",
+      statsGreatGrandchildren: "правнуков",
+      statsAllDescendants: "всего потомков",
+      empty: "Поиск ничего не нашел."
+    },
+    kz: {
+      pageTitle: "Отбасы шежіресі",
+      back: "Шежіренің толық бетіне өту",
+      eyebrow: "Шежіре",
+      title: "Отбасының шежіре ағашы",
+      lead: "Мұнда ата, әже және ұрпақтардың барлық тармақтары көрсетілген.",
+      note: "JSON ішінде ui блогы болмаса да, ағаш бар деректер бойынша құрылады.",
+      searchLabel: "Аты бойынша іздеу",
+      searchPlaceholder: "Атын немесе тармағын енгізіңіз",
+      branchesEyebrow: "Әулет тармақтары",
+      branchesTitle: "Отбасылық тармақтар бойынша ұрпақтар",
+      statsChildren: "баласы",
+      statsGrandchildren: "немересі",
+      statsGreatGrandchildren: "шөбересі",
+      statsAllDescendants: "барлық ұрпақ",
+      empty: "Іздеу бойынша ештеңе табылмады."
+    }
+  };
   var state = {
     language: getInitialLanguage(),
     filter: ""
@@ -91,7 +127,7 @@
   }
 
   function renderPage() {
-    var ui = treeData.ui[state.language];
+    var ui = getUi();
     document.documentElement.lang = state.language === "kz" ? "kk" : "ru";
 
     if (isStandalonePage) {
@@ -120,7 +156,7 @@
   }
 
   function renderStats() {
-    var ui = treeData.ui[state.language];
+    var ui = getUi();
     var counts = countGenerations(treeData.family.children, 1, {});
     var childrenCount = treeData.family.children.length;
     var grandchildrenCount = counts[2] || 0;
@@ -148,7 +184,7 @@
     if (pageNodes.empty) {
       var hasVisibleDescendants = filteredRoot.children && filteredRoot.children.length > 0;
       pageNodes.empty.hidden = hasVisibleDescendants;
-      pageNodes.empty.textContent = treeData.ui[state.language].empty;
+      pageNodes.empty.textContent = getUi().empty;
     }
 
     pageNodes.container.innerHTML = [
@@ -246,6 +282,12 @@
     (node.children || []).forEach(function (child) {
       walk(child, visitor);
     });
+  }
+
+  function getUi() {
+    var source = treeData && treeData.ui && treeData.ui[state.language];
+    var fallback = DEFAULT_UI[state.language] || DEFAULT_UI[DEFAULT_LANGUAGE];
+    return Object.assign({}, fallback, source || {});
   }
 
   function renderRow(nodes, depth) {

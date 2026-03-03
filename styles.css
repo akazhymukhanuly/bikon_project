@@ -771,6 +771,43 @@ dd {
   margin: 0;
 }
 
+.video-card {
+  overflow: hidden;
+  border: 1px solid rgba(96, 29, 21, 0.12);
+  border-radius: 1.6rem;
+  background: var(--paper);
+  box-shadow: 0 16px 38px rgba(45, 26, 18, 0.1);
+}
+
+.video-frame {
+  background: #1b120f;
+}
+
+.video-frame video,
+.video-frame iframe {
+  display: block;
+  width: 100%;
+  height: 38rem;
+  max-height: 38rem;
+  background: #000;
+  border: 0;
+}
+
+.video-card__body {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.2rem 1.2rem 1.3rem;
+}
+
+.video-card__body h3,
+.video-card__body p {
+  margin: 0;
+}
+
+.video-card__body p {
+  color: var(--muted);
+}
+
 .site-footer {
   padding: 1.2rem 0 2.5rem;
   text-align: center;
