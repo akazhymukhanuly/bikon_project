@@ -1,5 +1,6 @@
 (function () {
   var DEFAULT_LANGUAGE = "ru";
+  var PAGE_STATE_KEY = "grandpa-landing-editor-v6";
   var PLACEHOLDER_PHOTO = "assets/family-member-placeholder.svg";
   var DEFAULT_UI = {
     ru: {
@@ -79,6 +80,7 @@
     return response.json();
   }).then(function (payload) {
     treeData = payload;
+    state.language = getPreferredLanguage();
     bindEvents();
     renderPage();
     window.addEventListener("resize", drawConnectors);
@@ -415,10 +417,27 @@
   }
 
   function getInitialLanguage() {
+    return getPreferredLanguage();
+  }
+
+  function getPreferredLanguage() {
     var lang = String(document.documentElement.lang || "").toLowerCase();
     if (lang === "kk" || lang === "kz") {
       return "kz";
     }
+
+    try {
+      var raw = window.localStorage.getItem(PAGE_STATE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && (parsed.language === "ru" || parsed.language === "kz")) {
+          return parsed.language;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
     return DEFAULT_LANGUAGE;
   }
 
