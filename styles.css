@@ -808,6 +808,50 @@ dd {
   color: var(--muted);
 }
 
+.wounds-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem;
+}
+
+.wound-card {
+  overflow: hidden;
+  border: 1px solid rgba(96, 29, 21, 0.12);
+  border-radius: 1.6rem;
+  background: var(--paper);
+  box-shadow: 0 16px 38px rgba(45, 26, 18, 0.1);
+}
+
+.wound-card__media {
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(243, 232, 217, 0.82));
+}
+
+.wound-card__media img {
+  display: block;
+  width: 100%;
+  height: 28rem;
+  object-fit: contain;
+  border-radius: 1rem;
+  background: #f3ead9;
+}
+
+.wound-card__body {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0 1.2rem 1.25rem;
+}
+
+.wound-card__body h3,
+.wound-card__body p {
+  margin: 0;
+}
+
+.wound-card__body p {
+  color: var(--muted);
+}
+
 .site-footer {
   padding: 1.2rem 0 2.5rem;
   text-align: center;
@@ -985,11 +1029,19 @@ body.edit-mode [data-editor-image="true"]:hover {
     gap: 0.75rem;
   }
 
+  .wounds-grid {
+    grid-template-columns: 1fr;
+  }
+
   .archive-slide {
     width: min(100%, 22rem);
   }
 
   .archive-slide img {
+    height: 24rem;
+  }
+
+  .wound-card__media img {
     height: 24rem;
   }
 
