@@ -452,10 +452,8 @@ dd {
 
 .portrait-main img {
   width: 100%;
-  aspect-ratio: 720 / 1520;
   max-height: 42rem;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
   background: transparent;
 }
 
