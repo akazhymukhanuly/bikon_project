@@ -535,6 +535,14 @@ dd {
   gap: 1.3rem;
 }
 
+.family-showcase-highlight {
+  margin-top: -0.5rem;
+}
+
+.family-showcase-secondary {
+  display: none;
+}
+
 .family-showcase-card {
   margin: 0;
   overflow: hidden;
